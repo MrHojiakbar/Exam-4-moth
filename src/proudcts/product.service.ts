@@ -111,8 +111,11 @@ export class ProductService implements OnModuleInit {
 
     async updateFiles(images: Express.Multer.File[], id: number) {
         const foundProduct = await this.getById(id)
+        console.log(foundProduct);
+        
         const updateFiles = (await this.fs.UpdateFiles(images, foundProduct.data.images_url)).fileUrl
-
+        console.log(updateFiles);
+        
         const updateProductFiles = await this.productModel.update(
             {
                 images_url: updateFiles

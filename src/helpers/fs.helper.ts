@@ -28,13 +28,15 @@ export class FsHelper {
         if (!fs.existsSync(fileFolder)) {
             fs.mkdirSync(fileFolder, { recursive: true })
         }
-        for (let fileUrl of filesUrl) {
-            const fileName = join(process.cwd(), 'uploads', fileUrl)
-            fs.unlink(fileName, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            })
+        if (filesUrl) {
+            for (let fileUrl of filesUrl) {
+                const fileName = join(process.cwd(), 'uploads', fileUrl)
+                fs.unlink(fileName, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                })
+            }
         }
         let newFiles: string[] = []
         for (let file of files) {

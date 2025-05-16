@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, Query, UploadedFiles, UseInterceptors, Version } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, Put, Query, UploadedFiles, UseInterceptors, Version } from "@nestjs/common";
 import { ProductService } from "./product.service";
-import { CreateProduct, GetAllUsersQueryDto, UpdateProduct } from "./dtos";
+import { CreateProduct, GetAllUsersQueryDto, UpdateFileProduct, UpdateProduct } from "./dtos";
 import { ApiBearerAuth, ApiConsumes } from "@nestjs/swagger";
 import { Protected } from "src/decorators/protected.decorator";
 import { Roles } from "src/decorators/role.decorator";
@@ -37,20 +37,20 @@ export class ProductController {
         return this.service.create(payload, images_url)
     }
 
-    @Patch()
+    @Patch(":id")
     @Protected(true)
     @Roles([UserRoles.ADMIN])
     async update(@Body() payload: UpdateProduct, @Param("id", ParseIntPipe) id: number) {
         return this.service.update(payload, id)
     }
 
-    @Patch()
+    @Put(":id")
     @Protected(true)
     @Roles([UserRoles.ADMIN])
-    @UseInterceptors(FilesInterceptor("images"))
+    @UseInterceptors(FilesInterceptor("images_url"))
     @ApiConsumes("multipart/form-data")
-    async updateFiles(@Param("id", ParseIntPipe) id: number, @UploadedFiles(new CheckFileSizePipe(5), new CheckFileType('.jpeg', '.png')) images: Express.Multer.File[]) {
-        return this.service.updateFiles(images, id)
+    async updateFiles(@Param("id", ParseIntPipe) id: number,@Body() payload:UpdateFileProduct, @UploadedFiles(new CheckFileSizePipe(5), new CheckFileType('.jpeg', '.png')) images_url: Express.Multer.File[]) {
+        return this.service.updateFiles(images_url, id)
     }
 
     @Delete(":id")

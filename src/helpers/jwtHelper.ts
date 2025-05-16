@@ -6,15 +6,14 @@ export class JwtHelper {
     constructor(private jwt: JwtService) {}
 
     generateToken(data: { id: number, role: string }): object {
-        console.log(data);
         
-        const accessToken = this.jwt.sign(data,{secret:process.env.ACCESS_TOKEN_SECRET, expiresIn:process.env.ACCESS_TOKEN_EXPIRE_TIME});
-        return { accessToken };
+        const accessToken = this.jwt.sign(data,{secret:process.env.ACCESS_TOKEN_SECRET, expiresIn:process.env.ACCESS_TOKEN_EXPIRE_TIME?+process.env.ACCESS_TOKEN_EXPIRE_TIME:900});
+        return { accessToken };                                                                             
     }
 
     verifyToken(token: string): { id: number, role: string } {
         try {
-            
+
             const data = this.jwt.verify(token,{secret:process.env.ACCESS_TOKEN_SECRET})
             
             return data;
